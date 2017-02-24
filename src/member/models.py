@@ -8,7 +8,8 @@ from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django_filters import (
-    FilterSet, CharFilter, ChoiceFilter
+    FilterSet, CharFilter, ChoiceFilter, BooleanFilter,
+    MultipleChoiceFilter
 )
 from annoying.fields import JSONField
 
@@ -981,8 +982,8 @@ class ClientFilter(FilterSet):
         label=_('Search by name')
     )
 
-    status = ChoiceFilter(
-        choices=(('', ''),) + Client.CLIENT_STATUS,
+    status = MultipleChoiceFilter(
+        choices=Client.CLIENT_STATUS
     )
 
     delivery_type = ChoiceFilter(
