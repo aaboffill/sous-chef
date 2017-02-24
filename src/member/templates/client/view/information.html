@@ -72,7 +72,7 @@
         <div class="ui horizontal list">
             <div class="item"><div class="header">{% trans 'First Name' %}</div>{{emergency_contact.member.firstname}}</div>
             <div class="item"><div class="header">{% trans 'Last Name' %}</div>{{emergency_contact.member.lastname}}</div>
-            <div class="item"><div class="header">{% trans 'Relationship' %}</div>{{emergency_contact.relationship}}</div>
+            <div class="item"><div class="header">{% trans 'Relationship' %}</div>{{emergency_contact.relationship|default:'--'}}</div>
             {% for contact in emergency_contact.member.member_contact.all %}
                 {% if contact.value is not empty %}
                     <div class="item"><div class="header">{{contact.type}}</div>{{contact.display_value}}</div>
