@@ -1,6 +1,6 @@
 import json
 
-from datetime import date
+from datetime import date, timedelta
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -256,8 +256,9 @@ class ClientTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        today = date.today()
         cls.ss_client = ClientFactory(
-            birthdate=date(1980, 4, 19),
+            birthdate=date(today.year - 40, today.month, today.day),
             meal_default_week={
                 'monday_size': 'L',
                 'monday_main_dish_quantity': 1
@@ -277,7 +278,18 @@ class ClientTestCase(TestCase):
 
     def test_age(self):
         """The age on given date is properly computed"""
-        self.assertEqual(self.ss_client.age, 36)
+        self.assertEqual(self.ss_client.age, 40)
+        today = date.today()
+        yesterday = today - timedelta(days=1)
+        tomorrow = today + timedelta(days=1)
+        self.ss_client.birthdate = date(yesterday.year - 40, yesterday.month,
+                                        yesterday.day)
+        self.ss_client.save()
+        self.assertEqual(Client.objects.get(id=self.ss_client.id).age, 40)
+        self.ss_client.birthdate = date(tomorrow.year - 40, tomorrow.month,
+                                        tomorrow.day)
+        self.ss_client.save()
+        self.assertEqual(Client.objects.get(id=self.ss_client.id).age, 39)
 
     def test_orders(self):
         """Orders of a given client must be available as a model property"""
